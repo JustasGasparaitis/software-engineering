@@ -1,0 +1,49 @@
+@startuml
+class Worker {
+    +Worker(workerName: String)
+    ~job: String
+    ~name: String
+    ~greet(): void
+}
+class Programmer {
+    +Programmer(workerName: String)
+    -hasComputerOn: boolean
+    ~hasCoded: boolean
+    ~turnOnComputer(): void
+    ~code(): void
+}
+class WebProgrammer {
+    +WebProgrammer(workerName: String)
+    ~createFacebook(): void
+}
+class AndroidProgrammer {
+    +WebProgrammer(workerName: String)
+    ~createBolt(): void
+}
+class GameProgrammer {
+    +GameProgrammer(workerName: String)
+    ~createCounterStrike(): void
+}
+class ConstructionWorker {
+    +ConstructionWorker(workerName: String)
+    -brickCount: int
+    ~takeBricks(bricks: int): void
+    ~buildHouse(): void
+}
+class Farmer {
+    +Farmer(workerName: String)
+    -growthTime: final int
+    -waitTime: int
+    -cropPlanted: boolean
+    ~plantCrop(): void
+    ~waitCrop(time: int): void
+    ~harvestCrop(): void
+}
+Worker <|-- Programmer
+Worker <|-- ConstructionWorker
+Worker <|-- Farmer
+Programmer <|-- WebProgrammer
+Programmer <|-- AndroidProgrammer
+Programmer <|-- GameProgrammer
+
+@enduml

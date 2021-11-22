@@ -1,0 +1,87 @@
+@startuml
+
+class SerializationDemo {
+    +serialize(): void
+    +deserialize(): void
+}
+class CSVDemo {
+    +readData(): void
+    +writeData(): void
+}
+class InvalidCSVFileException {
+    +InvalidCSVFileException(errorMessage: String)
+}
+class WorkerFactory {
+    +createFarmer(name: int): Farmer
+    +createWebProgrammer(name: int): WebProgrammer
+    +createAndroidProgrammer(name: int): AndroidProgrammer
+    +createConstructionWorker(name: int): ConstructionWorker
+}
+abstract class Worker {
+    +Worker(workerName: String)
+    +job: String
+    +name: String
+    +greet(): void
+    +<<abstract>> work(): void
+    +equals(o: Object): boolean
+    +hashCode(): int
+}
+abstract class Programmer {
+    +Programmer(workerName: String)
+}
+class WebProgrammer {
+    -website: Website
+    +WebProgrammer(workerName: String)
+    +work(): void
+    +createWebsite(): Website
+    +getWebsite(): Website
+    +setWebsite(website: Website): void
+}
+class AndroidProgrammer {
+    -androidApp: AndroidApp
+    +WebProgrammer(workerName: String)
+    +work(): void
+    +createAndroidApp(): AndroidApp
+    +getAndroidApp(): AndroidApp
+    +setAndroidApp(androidApp: AndroidApp): void
+}
+interface Application {
+    +compile(): int
+    +fixBug(): boolean
+}
+class Website implements Application {
+    -random: final Random
+    -bugCount: int
+    +compile(): int
+    +fixBug(): boolean
+}
+class AndroidApp implements Application {
+    -random: final Random
+    -bugCount: int
+    +compile(): int
+    +fixBug(): boolean
+}
+class ConstructionWorker {
+    +ConstructionWorker(workerName: String)
+    +work(): void
+    -brickCount: int
+    ~takeBricks(bricks: int): void
+    ~buildHouse(): void
+}
+class Farmer {
+    +Farmer(workerName: String)
+    +work(): void
+    -growthTime: final int
+    -waitTime: int
+    -cropPlanted: boolean
+    ~plantCrop(): void
+    ~waitCrop(time: int): void
+    ~harvestCrop(): void
+}
+Worker <|-- ConstructionWorker
+Worker <|-- Farmer
+Worker <|-- Programmer
+Programmer <|-- WebProgrammer
+Programmer <|-- AndroidProgrammer
+
+@enduml

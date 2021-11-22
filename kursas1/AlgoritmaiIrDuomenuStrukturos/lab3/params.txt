@@ -1,0 +1,6 @@
+10 tikimybe kad klientas uzsinores sumustinio (% per minute)
+2 patiekiamu sumustiniu kiekis (vnt)
+5 patiekiamu sumustiniu periodiskumas (min)
+2880 sumustinio pasenimo laikas (min)
+2 sumustinio kaina (eur)
+720 darbo dienos ilgis (min)

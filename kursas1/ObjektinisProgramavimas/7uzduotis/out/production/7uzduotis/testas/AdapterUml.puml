@@ -1,0 +1,17 @@
+@startuml
+interface AppleTree {
+    +growFruit(): void
+}
+class AppleTreeImpl implements AppleTree {
+    -random: Random
+    +growFruit(): void
+}
+class BirchTreeImpl {
+    +releaseSap(): void
+}
+class BirchTreeAdapter implements AppleTree {
+    -birchTree: BirchTreeImpl
+    +BirchTreeAdapter(newBirchTree: BirchTreeImpl)
+    +growFruit(): void
+}
+@enduml

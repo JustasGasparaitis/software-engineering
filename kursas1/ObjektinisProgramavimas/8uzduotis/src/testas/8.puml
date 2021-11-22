@@ -1,0 +1,30 @@
+@startuml
+
+class MultithreadingDemo {
+    +main(): void
+}
+interface Runnable {
+    +run(): void
+}
+class WikipediaRunnable implements Runnable {
+    +WeatherRunnable(wikipediaArticle: String, fileWriter: FileWriter, lock: Object)
+    -wikipediaArticle: String
+    -fileWriter: FileWriter
+    -lock: Object
+    +run(): void
+}
+class WeatherRunnable implements Runnable {
+    +WeatherRunnable(fileWriter: FileWriter, lock: Object)
+    -fileWriter: FileWriter
+    -lock: Object
+    +run(): void
+}
+class CountToMaxIntRunnable implements Runnable {
+    +CountToMaxIntRunnable(times: int, fileWriter: FileWriter, lock: Object)
+    -times: int
+    -fileWriter: FileWriter
+    -lock: Object
+    +run(): void
+}
+
+@enduml

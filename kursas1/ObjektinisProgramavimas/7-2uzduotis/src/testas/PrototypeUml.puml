@@ -1,0 +1,13 @@
+@startuml
+interface Robot extends Cloneable {
+    +makeCopy(): Robot
+}
+class T101 implements Robot {
+    +makeCopy(): Robot
+    +toString(): String
+}
+class C3PO implements Robot {
+    +makeCopy(): Robot
+    +toString(): String
+}
+@enduml
