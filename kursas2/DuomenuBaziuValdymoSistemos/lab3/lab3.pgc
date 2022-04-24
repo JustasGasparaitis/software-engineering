@@ -1,0 +1,245 @@
+#include <stdio.h>
+
+// Prisijungimas prie duomenu bazes
+int login();
+
+// Atsijungimas nuo duomenu bazes
+void logout();
+
+// Isspausdinami visi valgiai
+void valgis_sarasas();
+
+// Naujo valgio ivedimas
+void valgis_naujas();
+
+// Valgio duomenu keitimas
+void valgis_perrasyti();
+
+// Valgio istrynimas (transakcija)
+void valgis_isimti();
+
+// Isspausdinami valgiai pagal naudotojo ivesta ivertinima (2 tarpusavyje susijusios lenteles)
+void valgis_ivertinimas();
+
+// Valgio paieska pagal fraze
+void valgis_paieska();
+
+// SQL baziniai kintamieji
+EXEC SQL BEGIN DECLARE SECTION;
+  int valgioNr;
+  char pavadinimas[101];
+  float kaina;
+  char tipas[21];
+  int ivertinimas;
+EXEC SQL END DECLARE SECTION;
+
+// SQL funkcija
+
+int main()
+{
+  EXEC SQL CREATE FUNCTION search(a character, b character) RETURNS BOOL AS $$
+  BEGIN
+  IF a ~* b THEN 
+  	RETURN TRUE;
+  ELSE
+     RETURN FALSE;
+  END IF;
+  END; $$
+  LANGUAGE plpgsql;
+  if (login())
+  {
+    char veiksmas;
+    while (1)
+    {
+      printf("Pasirinkite veiksma: S,I,U,D,P,R,H,Q (H - pagalba):\n");
+      scanf(" %c", &veiksmas);
+      switch (veiksmas)
+      {
+        case 'S':
+          valgis_sarasas();
+          break;
+        
+        case 'I':
+          printf("Iveskite naujojo valgio pavadinima: ");
+          scanf("%100s", pavadinimas);
+          printf("Iveskite naujojo valgio kaina: ");
+          scanf("%f", &kaina);
+          printf("Iveskite naujojo valgio tipa: ");
+          scanf("%20s", tipas);
+          valgis_naujas();
+          break;
+        
+        case 'U':
+          valgis_sarasas();
+          printf("Pasirinkite valgio numeri perrasymui: ");
+          scanf("%d", &valgioNr);
+          printf("Iveskite nauja valgio pavadinima: ");
+          scanf("%s", pavadinimas);
+          printf("Iveskite nauja valgio kaina: ");
+          scanf("%f", &kaina);
+          printf("Iveskite nauja valgio tipa: ");
+          scanf("%20s", tipas);
+          valgis_perrasyti();
+          break;
+        
+        case 'D':
+          valgis_sarasas();
+          printf("Pasirinkite valgio numeri isbraukimui is meniu:\n");
+          scanf("%d", &valgioNr);
+          valgis_isimti();
+          break;
+        
+        case 'R':
+          printf("Iveskite valgio pavadinimo paieskos fraze: ");
+          scanf("%100s", pavadinimas);
+          valgis_paieska();
+          break;
+
+        case 'P':
+          printf("Irasykite ivertinima, kuriuo ivertintus valgius norite pamatyti: ");
+          scanf("%d", &ivertinimas);
+          valgis_ivertinimas();
+          break;
+        
+        case 'H':
+          printf("S - meniu atspausdinimas\nI - valgio itraukimas\nU - valgio perrasymas\nD - valgio isbraukimas is meniu\nR - valgio paieska\nP - valgiai pagal ivertinima\nH - pagalba\nQ - programos uzdarymas\n");
+          break;
+        
+        case 'Q':
+          goto end;
+          break;
+      }
+    }
+  }
+  end:
+    logout();
+  return 0;
+}
+
+int login()
+{
+  EXEC SQL CONNECT TO studentu@pgsql2.mif USER juga7730 USING garas132;
+  if (SQLCODE != 0)
+  {
+    printf("Klaida %ld: prisijungimas prie duomenu bazes\n", SQLCODE);
+    return 0;
+  }
+  return 1;
+}
+
+void logout()
+{
+  EXEC SQL DISCONNECT;
+}
+
+void valgis_sarasas()
+{
+  EXEC SQL WHENEVER NOT FOUND GOTO enda;
+  EXEC SQL WHENEVER SQLERROR GOTO error;
+  
+  EXEC SQL DECLARE cursSarasas CURSOR FOR 
+    SELECT ValgioNr, Pavadinimas, Kaina, Tipas
+    FROM Valgis;
+  EXEC SQL OPEN cursSarasas;
+  while(1)
+  {
+    EXEC SQL FETCH cursSarasas INTO :valgioNr, :pavadinimas, :kaina, :tipas;
+    printf("%d | %s | %.2f | %s\n", valgioNr, pavadinimas, kaina, tipas);
+  }
+  error:
+    printf("SQL klaida: %ld\n", SQLCODE);
+
+  enda:
+    EXEC SQL WHENEVER SQLERROR CONTINUE;
+    EXEC SQL WHENEVER NOT FOUND CONTINUE;
+    EXEC SQL CLOSE cursSarasas;
+}
+
+void valgis_naujas()
+{
+  EXEC SQL INSERT INTO Valgis (Pavadinimas, Kaina, Tipas) VALUES (:pavadinimas, :kaina, :tipas);
+  EXEC SQL COMMIT;
+
+  if (SQLCODE != 0)
+  {
+    printf("SQL klaida: %ld\n", SQLCODE);
+  }
+}
+
+void valgis_perrasyti()
+{
+  EXEC SQL UPDATE Valgis
+    SET Pavadinimas = :pavadinimas, Kaina = :kaina, Tipas = :tipas
+    WHERE ValgioNr = :valgioNr;
+  EXEC SQL COMMIT;
+
+  if (SQLCODE != 0)
+  {
+    printf("SQL klaida: %ld\n", SQLCODE);
+  }
+}
+
+void valgis_isimti()
+{
+  EXEC SQL BEGIN;
+  EXEC SQL DELETE FROM ValgioProduktas WHERE ValgioNr = :valgioNr;
+  EXEC SQL DELETE FROM StaloPatiekalas USING Patiekalas WHERE Patiekalas.ValgioNr = :valgioNr;
+  EXEC SQL DELETE FROM Patiekalas WHERE ValgioNr = :valgioNr;
+  EXEC SQL DELETE FROM Valgis WHERE ValgioNr = :valgioNr;
+  EXEC SQL COMMIT;
+
+  if (SQLCODE != 0)
+  {
+    printf("SQL klaida: %ld\n", SQLCODE);
+  }
+}
+
+void valgis_ivertinimas()
+{
+  EXEC SQL WHENEVER NOT FOUND GOTO enda;
+  EXEC SQL WHENEVER SQLERROR GOTO error;
+  
+  EXEC SQL DECLARE cursIvertinimai CURSOR FOR 
+    SELECT Pavadinimas
+    FROM Valgis, Patiekalas
+    WHERE Valgis.ValgioNr = Patiekalas.ValgioNr
+    AND Patiekalas.Ivertinimas = :ivertinimas
+    GROUP BY Pavadinimas;
+  EXEC SQL OPEN cursIvertinimai;
+  while(1)
+  {
+    EXEC SQL FETCH cursIvertinimai INTO :pavadinimas;
+    printf("%s\n", pavadinimas);
+  }
+  error:
+    printf("SQL klaida: %ld\n", SQLCODE);
+
+  enda:
+    EXEC SQL WHENEVER SQLERROR CONTINUE;
+    EXEC SQL WHENEVER NOT FOUND CONTINUE;
+    EXEC SQL CLOSE cursIvertinimai;
+}
+
+void valgis_paieska()
+{
+  EXEC SQL WHENEVER NOT FOUND GOTO endb;
+  EXEC SQL WHENEVER SQLERROR GOTO error;
+  
+  EXEC SQL DECLARE cursPaieska CURSOR FOR 
+    SELECT Pavadinimas
+    FROM Valgis
+    WHERE search(Pavadinimas, :pavadinimas);
+  EXEC SQL OPEN cursPaieska;
+  while(1)
+  {
+    EXEC SQL FETCH cursPaieska INTO :pavadinimas;
+    printf("%s\n", pavadinimas);
+  }
+  error:
+    printf("SQL klaida: %ld\n", SQLCODE);
+
+  endb:
+    EXEC SQL WHENEVER SQLERROR CONTINUE;
+    EXEC SQL WHENEVER NOT FOUND CONTINUE;
+    EXEC SQL CLOSE cursPaieska;
+}

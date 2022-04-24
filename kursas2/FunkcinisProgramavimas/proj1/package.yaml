@@ -1,0 +1,42 @@
+name:                bomberman-client
+version:             0.1.0.0
+github:              "githubuser/bomberman-client"
+license:             BSD3
+author:              "Author name here"
+maintainer:          "example@example.com"
+copyright:           "2021 Author name here"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/githubuser/bomberman-client#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+
+executables:
+  bomberman-client-1:
+    main:                Main.hs
+    source-dirs:         app1
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - bomberman-client
+    - wreq
+    - aeson
+    - lens
+    - ansi-terminal
+    - string-conversions

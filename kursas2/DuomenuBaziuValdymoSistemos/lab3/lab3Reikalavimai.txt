@@ -1,0 +1,19 @@
+o Turi būti realizuotos šios pagrindinės darbo su duomenimis funkcijos (veiksmai):
+	o duomenų paieška;
+	o duomenų įvedimas;
+	o duomenų atnaujinimas (keitimas);
+	o duomenų trynimas (šalinimas).
+	
+o Bent viena duomenų modifikavimo funkcija turi būti realizuota panaudojant kelis SQL sakinius, t.y. panaudota reali transakcija.
+o Bent viena realizuota funkcija turi naudoti bent 2 tarpusavyje susijusias lenteles.
+    
+
+! parašytas C/C++ programavimo kalba, naudojant programų SQL (pakanka vartoti tik statinį SQL),
+
+! Nebūtina šias funkcijas realizuoti darbui su visais DB duomenimis (lentelėmis), pakanka realizuoti jas tik daliai DB duomenų (lentelių).
+
+! Programos vartotojo sąsaja turėtų būti tekstine, t.y. grafinė vartotojo sąsaja yra visiškai nereikalinga, bet galima.
+
+! Programa turi būti pakankamai atspari SQL injekcijoms.
+
+! Darbo su duomenimis funkcijos turi realizuoti konkrečiai dalykinei sričiai būdingus veiksmus. Pvz., yra galima duomenų įvedimo funkcija (veiksmas) "Užregistruoti naują bibliotekos skaitytoją", bet NE "Įvesti naują eilutę į lentelę.."; galima - "Grąžinti paimtą knygą", bet NE "Pakeisti (ar ištrinti) eilutę". Vienai funkcijai atlikti gali reikėti ir kelių SQL sakinių. Jei, realizuojant funkcijas, prireikia įvesti tapatumo požymį, kuris neturi aiškios loginės prasmės, pvz. ID, tai prieš požymio reikšmės įvedimą būtina išvesti į ekraną visas jau esamas to požymio reikšmes kartu su prasminių atributų reikšmėmis. Bent viena tokia funkcija turi būti realizuota.

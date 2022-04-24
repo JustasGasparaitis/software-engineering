@@ -1,0 +1,28 @@
+Užduotis studentui juga7730:
+
+1. Visų autorių, parašiusių bent po vieną knygą, vardai ir pavardės.
+
+SELECT DISTINCT vardas, pavarde
+FROM stud.autorius, stud.knyga
+WHERE stud.autorius.isbn = stud.knyga.isbn;
+
+
+
+2. Poros skaitytojų (jų vardai ir pavardės), kurių gimimo dienos yra tą patį mėnesį.
+
+SELECT DISTINCT ON (t1.vardas, t1.pavarde) t1.vardas, t1.pavarde
+FROM stud.skaitytojas t1, stud.skaitytojas t2
+WHERE EXTRACT(MONTH FROM t1.gimimas) = EXTRACT(MONTH FROM t2.gimimas)
+AND t1.ak <> t2.ak;
+
+
+
+3. Kiekvienam skaitytojui (vardas, pavardė) paimtų egzempliorių skaičius ir bendra jų vertė. Jei knygos vertė nenurodyta, laikyti, kad ji lygi 10.
+
+
+
+4. Pavadinimai ir ISBN knygų, kurių autorių skaičius yra didesnis už visų knygų autorių skaičių vidurkį.
+
+
+
+5. Kiekvienam duomenų tipui - domenų, sukurtų naudojant tą duomenų tipą, skaičius.

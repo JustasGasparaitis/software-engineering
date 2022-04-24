@@ -1,0 +1,7 @@
+resolver: nightly-2021-09-30
+compiler: ghc-9.0.1
+compiler-check: match-exact
+
+# Local packages, usually specified by relative directory name
+packages:
+- '.'
