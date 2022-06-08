@@ -1,0 +1,4 @@
+#!/bin/sh
+gcc -pthread chatserver.c -o chatserver &
+./chatserver "1234" "2000" &
+./chatserver "1234" "2001"
